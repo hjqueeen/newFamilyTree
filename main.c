@@ -118,6 +118,18 @@ void printPerson(List *list, char *firstName, char *lastName) {
     if (target->mother != NULL) {
         printf("Mother: %s %s\n", target->mother->firstName, target->mother->lastName);
     }
+    if (target->father != NULL && target->father->father != NULL) {
+        printf("Father of Father: %s %s\n", target->father->father->firstName, target->father->father->lastName);
+    }
+    if (target->father != NULL && target->father->mother != NULL) {
+        printf("Mother of Father: %s %s\n", target->father->mother->firstName, target->father->mother->lastName);
+    }
+    if (target->father != NULL && target->mother->father != NULL) {
+        printf("Father of Mother: %s %s\n", target->mother->father->firstName, target->mother->father->lastName);
+    }
+    if (target->father != NULL && target->mother->mother != NULL) {
+        printf("Mother of Mother: %s %s\n", target->mother->mother->firstName, target->mother->mother->lastName);
+    }
 }
 
 int main() {
@@ -131,8 +143,10 @@ int main() {
     do {
         char firstName[50];
         char lastName[50];
-        char parentFN[50];
-        char parentLN[50];
+        char fatherFN[50];
+        char fatherLN[50];
+        char motherFN[50];
+        char motherLN[50];
 
         printf("1: AddPerson\n");
         printf("2: PrintPerson\n");
@@ -153,17 +167,17 @@ int main() {
 
                 // Find father
                 printf("Father's firstname: \n");
-                scanf("%s", parentFN);
+                scanf("%s", fatherFN);
                 printf("Father's lastname: \n");
-                scanf("%s", parentLN);
-                Person *father = findPerson(familyList, parentFN, parentLN);
+                scanf("%s", fatherLN);
+                Person *father = findPerson(familyList, fatherFN, fatherLN);
 
                 // Find mother
                 printf("Mother's firstname: \n");
-                scanf("%s", parentFN);
+                scanf("%s", motherFN);
                 printf("Mother's lastname: \n");
-                scanf("%s", parentLN);
-                Person *mother = findPerson(familyList, parentFN, parentLN);
+                scanf("%s", motherLN);
+                Person *mother = findPerson(familyList, motherFN, motherLN);
 
                 // Create Person
                 addPerson(familyList, firstName, lastName, father, mother);
