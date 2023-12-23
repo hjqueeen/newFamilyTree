@@ -78,31 +78,13 @@ void addPerson(List *list, char *firstName, char *lastName, Person *father, Pers
     }
 }
 
-void addFather(List *list, char *firstName, char *lastName, char *fatherFN, char *fatherLN) {
-    Person *target = findPerson(list, firstName, lastName);
-    Person *father = findPerson(list, fatherFN, fatherLN);
-
-    // No one was found
-    if (target == NULL || father == NULL) {
-        printf("No one was found.\n");
-        return;
+void printPerson(Person *person) {
+    if (person != NULL) {
+        printf("Name: %s %s\n", person->firstName, person->lastName);
     }
-    target->father = father;
 }
 
-void addMother(List *list, char *firstName, char *lastName, char *motherFN, char *motherLN) {
-    Person *target = findPerson(list, firstName, lastName);
-    Person *mother = findPerson(list, motherFN, motherLN);
-
-    // No one was found
-    if (target == NULL || mother == NULL) {
-        printf("No one was found.\n");
-        return;
-    }
-    target->mother = mother;
-}
-
-void printPerson(List *list, char *firstName, char *lastName) {
+void printWithFamily(List *list, char *firstName, char *lastName) {
     Person *target = findPerson(list, firstName, lastName);
 
     // No one was found
@@ -113,22 +95,28 @@ void printPerson(List *list, char *firstName, char *lastName) {
 
     printf("Person: %s %s\n", target->firstName, target->lastName);
     if (target->father != NULL) {
-        printf("Father: %s %s\n", target->father->firstName, target->father->lastName);
+        printf("Father's ");
+        printPerson(target->father);
     }
     if (target->mother != NULL) {
-        printf("Mother: %s %s\n", target->mother->firstName, target->mother->lastName);
+        printf("Mother's ");
+        printPerson(target->mother);
     }
     if (target->father != NULL && target->father->father != NULL) {
-        printf("Father of Father: %s %s\n", target->father->father->firstName, target->father->father->lastName);
+        printf("Father of Father - ");
+        printPerson(target->father->father);
     }
     if (target->father != NULL && target->father->mother != NULL) {
-        printf("Mother of Father: %s %s\n", target->father->mother->firstName, target->father->mother->lastName);
+        printf("Mother of Father - ");
+        printPerson(target->father->mother);
     }
     if (target->father != NULL && target->mother->father != NULL) {
-        printf("Father of Mother: %s %s\n", target->mother->father->firstName, target->mother->father->lastName);
+        printf("Father of Mother - ");
+        printPerson(target->mother->father);
     }
     if (target->father != NULL && target->mother->mother != NULL) {
-        printf("Mother of Mother: %s %s\n", target->mother->mother->firstName, target->mother->mother->lastName);
+        printf("Mother of Mother - ");
+        printPerson(target->mother->mother);
     }
 }
 
@@ -160,9 +148,9 @@ int main() {
 
         switch (code) {
             case 1:
-                printf("Firstname: \n");
+                printf("Firstname: ");
                 scanf("%s", firstName);
-                printf("Lastname: \n");
+                printf("Lastname: ");
                 scanf("%s", lastName);
 
                 // Find father
@@ -188,7 +176,7 @@ int main() {
                 scanf("%s", firstName);
                 printf("Lastname: \n");
                 scanf("%s", lastName);
-                printPerson(familyList, firstName, lastName);
+                printWithFamily(familyList, firstName, lastName);
                 break;
 
             default:
