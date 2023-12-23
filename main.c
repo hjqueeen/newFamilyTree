@@ -52,7 +52,7 @@ void addPerson(List *list, char *firstName, char *lastName, Person *father, Pers
     // Validation
     Person *existPerson = findPerson(list, firstName, lastName);
     if (existPerson != NULL) {
-        printf("Person exist already.\n");
+        printf("Person exists already.\n");
         return;
     }
 
@@ -60,22 +60,12 @@ void addPerson(List *list, char *firstName, char *lastName, Person *father, Pers
     Person *new = (Person *) malloc(sizeof(Person));
     strcpy(new->firstName, firstName);
     strcpy(new->lastName, lastName);
-    new->next = NULL;
     new->father = father;
     new->mother = mother;
 
-    // If list is empty
-    if (list->first == NULL) {
-        list->first = new;
-    } else {
-        Person *current = list->first;
-        // Find last person
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        // Push new person to the end of the list
-        current->next = new;
-    }
+    // Set new Person as first
+    new->next = list->first;
+    list->first = new;
 }
 
 void printPerson(Person *person) {
@@ -95,11 +85,11 @@ void printWithFamily(List *list, char *firstName, char *lastName) {
 
     printf("Person: %s %s\n", target->firstName, target->lastName);
     if (target->father != NULL) {
-        printf("Father's ");
+        printf("Father - ");
         printPerson(target->father);
     }
     if (target->mother != NULL) {
-        printf("Mother's ");
+        printf("Mother - ");
         printPerson(target->mother);
     }
     if (target->father != NULL && target->father->father != NULL) {
@@ -120,6 +110,23 @@ void printWithFamily(List *list, char *firstName, char *lastName) {
     }
 }
 
+void deletePerson(List *list, char *firstName, char *lastName) {
+    Person *target; // Person to delete
+    Person *current = list->first;
+
+    while (current != NULL) {
+        // Find person
+        if (strcmp(current->next->firstName, firstName) == 0 && strcmp(current->next->lastName, lastName) == 0) {
+            // Remove people from the list and delete them
+            target = current->next;
+            current->next = target->next;
+            free(target);
+            return;
+        }
+        current = current->next;
+    }
+}
+
 int main() {
     List *familyList = initialList();
     if (familyList == NULL) {
@@ -136,23 +143,27 @@ int main() {
         char motherFN[50];
         char motherLN[50];
 
-        printf("1: AddPerson\n");
-        printf("2: PrintPerson\n");
-        printf("0: Programm end \n");
+        printf("1: Add Person\n");
+        printf("2: Print Person\n");
+        printf("3: Delete Person\n");
+        printf("===================\n");
+        printf("0: Program end \n");
         scanf("%d", &code);
 
-        if (code < 0 || code > 2) {
+        if (code < 0 || code > 3) {
             printf("Input wrong\n");
             break; // Go to the start
         }
 
+        if (code) {
+            printf("Firstname: ");
+            scanf("%s", firstName);
+            printf("Lastname: ");
+            scanf("%s", lastName);
+        }
+
         switch (code) {
             case 1:
-                printf("Firstname: ");
-                scanf("%s", firstName);
-                printf("Lastname: ");
-                scanf("%s", lastName);
-
                 // Find father
                 printf("Father's firstname: \n");
                 scanf("%s", fatherFN);
@@ -172,11 +183,11 @@ int main() {
                 break;
 
             case 2:
-                printf("Firstname: \n");
-                scanf("%s", firstName);
-                printf("Lastname: \n");
-                scanf("%s", lastName);
                 printWithFamily(familyList, firstName, lastName);
+                break;
+
+            case 3:
+                deletePerson(familyList, firstName, lastName);
                 break;
 
             default:
